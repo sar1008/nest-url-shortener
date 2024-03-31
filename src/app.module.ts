@@ -1,12 +1,19 @@
 import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ShortUrlController } from './short-url/short-url.controller';
-import { PrismaService } from './prisma/prisma.service';
-import { ShortUrlService } from './short-url/short-url.service';
+import { ShortUrlModule } from './short-url/short-url.module';
 
 @Module({
-  controllers: [AppController, ShortUrlController],
-  providers: [AppService, PrismaService, ShortUrlService],
+  imports: [
+    ShortUrlModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: true, // This will generate the schema.gql file automatically
+    }),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
